@@ -2,7 +2,16 @@ var svgns = "http://www.w3.org/2000/svg";
 var sliceEnds = [];
 var numSlices = 16; // How many slices do we want
 var slicesContainer = document.getElementById("slicesContainer");
+var roulette = document.getElementById("roulette");
 var sliceSize = 300 / numSlices;
+
+// Get the wheel disc that we are rotating
+// We start at angle 0, and every 10ms add 2 degrees
+var disc = document.getElementById("wheelDisc");
+var discAngle = 0;
+var updateMs = 10;
+var rotationSpeed = 1;
+var slowDownFactor = 1;
 
 function SliceEnd(num) {
   this.id = "sliceEnd_" + num;
@@ -63,7 +72,16 @@ SliceEnd.prototype.createSvgSlice = function(num) {
   return g;
 }
 
+function onTimerTick() {
+  discAngle += rotationSpeed;
+  rotationSpeed *= slowDownFactor;
+  disc.setAttribute("transform", "rotate(" + discAngle + " 250 250)");
+}
+
 // Create the slices
 for (var i = 0; i < numSlices; i++) {
   sliceEnds[i] = new SliceEnd(i);
 }
+
+// Set the timer that will update every X ms
+setInterval(onTimerTick, updateMs);
